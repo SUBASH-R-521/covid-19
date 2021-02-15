@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterapiintegration/pages/search.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -28,6 +29,11 @@ class _CountryPageState extends State<CountryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.search), onPressed: (){
+            showSearch(context: context, delegate: Search(countryData));
+          })
+        ],
         title: Text('Country stats'),
       ),
       body: countryData == null
@@ -36,51 +42,73 @@ class _CountryPageState extends State<CountryPage> {
             )
           : ListView.builder(
               itemBuilder: (context, index) {
-                return Container(
-                  height: 130,
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey[100],
-                        blurRadius: 10,
-                        offset: Offset(0, 10)),
-                  ]),
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 10,
+                return Card(
+                  child: Container(
+                    height: 130,
+                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                          width: 200,
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 10,
+                          ),
+                          child: Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  countryData[index]['country'],
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Image.network(
+                                  countryData[index]['countryInfo']['flag'],
+                                  height: 40,
+                                  width: 50,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        child: Expanded(
+                        Expanded(
+                            child: Container(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                countryData[index]['country'],
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                'CONFIRMED' +
+                                    countryData[index]['cases'].toString(),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red),
                               ),
-                              Image.network(
-                                countryData[index]['countryInfo']['flag'],
-                                height: 40,
-                                width: 50,
+                              Text(
+                                'ACTIVE' +
+                                    countryData[index]['active'].toString(),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue),
+                              ),
+                              Text(
+                                'RECOVERED' +
+                                    countryData[index]['recovered'].toString(),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green),
+                              ),
+                              Text(
+                                'DEATHS' +
+                                    countryData[index]['deaths'].toString(),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).brightness==Brightness.dark?Colors.grey[100]:Colors.grey[900]),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                      Expanded(
-                          child: Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('CONFIRMED'+countryData[index]['cases'].toString(),style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
-                            Text('ACTIVE'+countryData[index]['active'].toString(),style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
-                            Text('RECOVERED'+countryData[index]['recovered'].toString(),style: TextStyle(fontWeight: FontWeight.bold,color: Colors.green),),
-                            Text('DEATHS'+countryData[index]['deaths'].toString(),style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey[800]),),
-                          ],
-                        ),
-                      ))
-                    ],
+                        ))
+                      ],
+                    ),
                   ),
                 );
               },

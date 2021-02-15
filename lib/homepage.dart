@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapiintegration/datasource.dart';
 import 'package:flutterapiintegration/pages/countrypage.dart';
@@ -28,7 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   fetchCountryData() async {
     http.Response response =
-    await http.get("https://disease.sh/v3/covid-19/countries");
+    await http.get("https://disease.sh/v3/covid-19/countries?sort=cases");
     setState(() {
       countryData = json.decode(response.body);
     });
@@ -45,6 +46,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(icon: Icon(Theme.of(context).brightness==Brightness.light?Icons.lightbulb_outline:Icons.highlight), onPressed: (){
+            DynamicTheme.of(context).setBrightness(Theme.of(context).brightness==Brightness.light?Brightness.dark:Brightness.light);
+          })
+        ],
         centerTitle: false,
         title: Text(
           'COVID-19 TRACKER',
